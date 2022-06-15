@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 
+#include <wlr/types/wlr_xcursor_manager.h>
 #include <wlr/util/log.h>
 #include <wlr/xwayland.h>
 
@@ -368,6 +369,26 @@ xwayland_init(struct kiwmi_desktop *desktop)
 
     if (!desktop->xwayland) {
         return false;
+    }
+
+    if (!wlr_xcursor_manager_load(
+            server->input.cursor->xcursor_manager, 1.0f)) {
+        wlr_xwayland_destroy(desktop->xwayland);
+        return false;
+    }
+
+    struct wlr_xcursor *xcursor = wlr_xcursor_manager_get_xcursor(
+        server->input.cursor->xcursor_manager, "left_ptr", 1.0f);
+    if (xcursor) {
+        struct wlr_xcursor_image *image = xcursor->images[0];
+        wlr_xwayland_set_cursor(
+            desktop->xwayland,
+            image->buffer,
+            image->width * 4,
+            image->width,
+            image->height,
+            image->hotspot_x,
+            image->hotspot_y);
     }
 
     wlr_log(
