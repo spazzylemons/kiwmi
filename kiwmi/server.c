@@ -22,6 +22,9 @@
 #include <wlr/types/wlr_screencopy_v1.h>
 #include <wlr/util/log.h>
 
+#ifdef KIWMI_XWAYLAND
+#    include "desktop/xwayland.h"
+#endif
 #include "luak/luak.h"
 
 bool
@@ -63,6 +66,13 @@ server_init(struct kiwmi_server *server, char *config_path)
         wl_display_destroy(server->wl_display);
         return false;
     }
+
+#ifdef KIWMI_XWAYLAND
+    if (!xwayland_init(&server->desktop)) {
+        wlr_log(WLR_ERROR, "Failed to start Xwayland");
+        return false;
+    }
+#endif
 
     wlr_data_control_manager_v1_create(server->wl_display);
     wlr_gamma_control_manager_v1_create(server->wl_display);
@@ -139,6 +149,10 @@ server_fini(struct kiwmi_server *server)
     wlr_log(WLR_DEBUG, "Shutting down Wayland server");
 
     wl_signal_emit(&server->events.destroy, server);
+
+#ifdef KIWMI_XWAYLAND
+    xwayland_fini(&server->desktop);
+#endif
 
     wl_display_destroy_clients(server->wl_display);
 

@@ -13,6 +13,9 @@
 struct kiwmi_desktop {
     struct wlr_compositor *compositor;
     struct wlr_xdg_shell *xdg_shell;
+#ifdef KIWMI_XWAYLAND
+    struct wlr_xwayland *xwayland;
+#endif
     struct wlr_xdg_decoration_manager_v1 *xdg_decoration_manager;
     struct wlr_layer_shell_v1 *layer_shell;
     struct wlr_data_device_manager *data_device_manager;

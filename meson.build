@@ -28,6 +28,13 @@ xkbcommon         = dependency('xkbcommon')
 
 include = include_directories('include')
 
+if get_option('enable-xwayland')
+  if wlroots.get_variable(pkgconfig: 'have_xwayland', internal: 'have_xwayland') != 'true'
+    error('Xwayland support was requested but is not available')
+  endif
+  add_project_arguments('-DKIWMI_XWAYLAND', language: 'c')
+endif
+
 version = get_option('kiwmi-version')
 if version != ''
   version = '"@0@"'.format(version)

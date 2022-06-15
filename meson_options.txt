@@ -1,2 +1,3 @@
 option('kiwmi-version', type: 'string', description: 'The version string reported in `kiwmi -v`.')
 option('lua-pkg', type: 'string', value: 'lua', description: 'The Lua version to use.')
+option('enable-xwayland', type: 'boolean', value: true, description: 'Enable Xwayland support.')

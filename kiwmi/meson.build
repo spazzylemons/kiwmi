@@ -23,6 +23,10 @@ kiwmi_sources = files(
   'luak/luak.c',
 )
 
+if get_option('enable-xwayland')
+  kiwmi_sources += files('desktop/xwayland.c')
+endif
+
 kiwmi_deps = [
   lua,
   pixman,
