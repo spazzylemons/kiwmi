@@ -9,8 +9,8 @@
 
 #include <stdlib.h>
 
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include <lauxlib.h>
 #include <wayland-server.h>
