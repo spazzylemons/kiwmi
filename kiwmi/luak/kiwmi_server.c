@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include <lauxlib.h>
 #include <wayland-server.h>
@@ -248,8 +249,24 @@ l_kiwmi_server_spawn(lua_State *L)
     }
 
     if (pid == 0) {
-        execl("/bin/sh", "/bin/sh", "-c", command, NULL);
-        _exit(EXIT_FAILURE);
+        // grandchild runs exec, child dies, grandchild is adopted by init
+        // this avoids zombie processes
+        pid_t grandchild = fork();
+
+        if (grandchild < 0) {
+            _exit(EXIT_FAILURE);
+        }
+
+        if (grandchild == 0) {
+            execl("/bin/sh", "/bin/sh", "-c", command, NULL);
+            _exit(EXIT_FAILURE);
+        }
+
+        _exit(EXIT_SUCCESS);
+    }
+
+    if (waitpid(pid, NULL, 0) < 0) {
+        return luaL_error(L, "Failed to run command (waitpid)");
     }
 
     lua_pushinteger(L, pid);
