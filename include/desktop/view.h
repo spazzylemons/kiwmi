@@ -24,6 +24,9 @@ enum kiwmi_view_prop {
 
 enum kiwmi_view_type {
     KIWMI_VIEW_XDG_SHELL,
+#ifdef KIWMI_XWAYLAND
+    KIWMI_VIEW_XWAYLAND,
+#endif
 };
 
 struct kiwmi_view {
@@ -37,6 +40,9 @@ struct kiwmi_view {
     enum kiwmi_view_type type;
     union {
         struct wlr_xdg_surface *xdg_surface;
+#ifdef KIWMI_XWAYLAND
+        struct wlr_xwayland_surface *xwayland_surface;
+#endif
     };
 
     struct wlr_surface *wlr_surface;

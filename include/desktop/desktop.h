@@ -28,6 +28,9 @@ struct kiwmi_desktop {
     struct wl_listener xdg_shell_new_surface;
     struct wl_listener xdg_toplevel_new_decoration;
     struct wl_listener layer_shell_new_surface;
+#ifdef KIWMI_XWAYLAND
+    struct wl_listener xwayland_new_surface;
+#endif
     struct wl_listener new_output;
 
     struct {
